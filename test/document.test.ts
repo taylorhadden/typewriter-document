@@ -146,3 +146,32 @@ describe('Text and Newline Insertion', () => {
     });
   });
 });
+
+describe('Selection Changes', () => {
+  it('Should reuse the lines of a document when the only change is setting selection', () => {
+    let doc = new TextDocument();
+    doc = doc.apply(doc.change.insert(0, 'Some example\nmultiline text'));
+
+    let selectedDoc = doc.apply(doc.change.select([1, 1]));
+
+    expect(selectedDoc.lines === doc.lines).toBeTruthy()
+  });
+
+  it('Should reuse the lines of a document when the only change is clearing selection', () => {
+    let doc = new TextDocument();
+    doc = doc.apply(doc.change.insert(0, 'Some example\nmultiline text').select(2));
+
+    let selectedDoc = doc.apply(doc.change.select(null));
+
+    expect(selectedDoc.lines === doc.lines).toBeTruthy();
+  });
+
+  it('Should retain the selection of a document when the selection of a change is undefined', () => {
+    let doc = new TextDocument();
+    doc = doc.apply(doc.change.insert(0, 'Some example\nmultiline text').select(2));
+
+    let undefinedSelectionDoc = doc.apply(doc.change);
+
+    expect(undefinedSelectionDoc.selection).toEqual(doc.selection);
+  });
+});
