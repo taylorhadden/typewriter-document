@@ -198,8 +198,8 @@ export default class TextDocument {
       return this;
     }
 
-    // Optimization for selection-only change
-    if (!delta.ops.length && selection) {
+    // If only selection has changed, all other state can be the same objects
+    if (!delta.ops.length) {
       return new TextDocument(this, selection);
     }
 
