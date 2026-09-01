@@ -147,6 +147,36 @@ describe('Text and Newline Insertion', () => {
   });
 });
 
+describe('Complex modifications and line equality', () => {
+  it('Should retain as many lines as possible when swapping', () => {
+    let doc = new TextDocument()
+    doc = doc.apply(doc.change.insert(0, `Line 1
+Line 2
+Line 3
+Line 4
+Line 5
+`))
+    const old = doc
+    doc = doc.apply(doc.change.setDelta(
+      new Delta()
+      .retain(7)
+      .insert('Line 3\n')
+      .retain(7) // Line 2
+      .delete(7) // Line 3
+    ))
+
+    expect(doc.getText()).toEqual(`Line 1
+Line 3
+Line 2
+Line 4
+Line 5
+`)
+    expect(old.lines[0]).toBe(doc.lines[0])
+    //expect(old.lines[3]).toBe(doc.lines[3]) // Ideally this can continue to be the same line, but not the case now
+    expect(old.lines[4]).toBe(doc.lines[4])
+  })
+})
+
 describe('Selection Changes', () => {
   it('Should reuse the lines of a document when the only change is setting selection', () => {
     let doc = new TextDocument();
