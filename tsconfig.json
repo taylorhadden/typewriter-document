@@ -3,7 +3,7 @@
     "target": "es2021",
     "strict": true,
     "noImplicitAny": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "module": "ESNext",
     "sourceMap": true,
     "declaration": true,
